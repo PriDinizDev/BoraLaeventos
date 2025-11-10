@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Bem_Vindo.pt.Models.User>
+
+@{
+    ViewData["Title"] = "Gestão de Utilizadores";
+}
+
+@* ===== CABEÇALHO ATUALIZADO COM BOTÕES DE EXPORTAÇÃO ===== *@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>@ViewData["Title"]</h1>
+        <p class="lead text-muted mb-0">Lista de utilizadores registados na plataforma.</p>
+    </div>
+    <div class="btn-group" role="group">
+        <a asp-action="ExportUsersToXml" asp-controller="Admin" class="btn btn-outline-primary">
+            <i class="fas fa-file-code me-1"></i> Exportar XML
+        </a>
+        <a asp-action="PrintUsersPdf" asp-controller="Admin" class="btn btn-outline-danger">
+            <i class="fas fa-file-pdf me-1"></i> Exportar PDF
+        </a>
+    </div>
+</div>
+@* ===== FIM DO CABEÇALHO ATUALIZADO ===== *@
+
+
+@* Exibe mensagens de sucesso/erro vindas do Controller (TempData) *@
+@if (TempData["UserManagementMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["UserManagementMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["UserManagementError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["UserManagementError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-striped table-hover mb-0">
+            @* mb-0 para remover margem dentro do card *@
+            <thead class="table-light">
+                @* Cabeçalho com cor suave *@
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.First().Nome)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Role)</th>
+                    <th>Conta Ativada?</th>
+                    <th class="text-end">Ações</th> @* Alinhar ações à direita *@
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Nome)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Role)</td>
+                            <td>
+                                @if (item.IsContaAtivada)
+                                {
+                                    <span class="badge bg-success">Sim</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Não</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @* Alinhar ações à direita *@
+                                @if (item.IsContaAtivada)
+                                {
+                                    <form asp-action="DeactivateUser" asp-controller="Admin" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Tem a certeza que deseja DESATIVAR a conta de @item.Nome?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-warning">Desativar</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="ActivateUser" asp-controller="Admin" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Tem a certeza que deseja ATIVAR a conta de @item.Nome?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-success">Ativar</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">Nenhum utilizador encontrado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

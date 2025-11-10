@@ -1,0 +1,182 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background: linear-gradient(135deg, #6B8DD6 0%, #8E7CC3 100%); /* Degradê azul/roxo suave */
+}
+}
+/* ============================================= */
+/* Estilos Personalizados para Cartões (Guias e Fórum) */
+/* ============================================= */
+
+/* Cor de fundo base para os cartões */
+.guide-card,
+.forum-card {
+    background-color: #f8f9fa; /* Um cinza muito claro como base */
+    border: 1px solid #e9ecef; /* Borda sutil */
+    /* Mantém as transições que já tínhamos */
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+    /* Efeito Hover (mantém o que tínhamos) */
+    .guide-card:hover,
+    .forum-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+
+/* ---- Cores Verde e Vermelho (Portugal/Brasil) ---- */
+/* Pode descomentar UMA das opções abaixo ou criar a sua */
+
+/* Opção 1: Todos os cartões com um gradiente suave */
+/*
+.guide-card,
+.forum-card {
+    background-image: linear-gradient(to right, rgba(204, 255, 204, 0.3), rgba(255, 204, 204, 0.3));
+}
+*/
+
+/* Opção 2: Cores sólidas alternadas (Verde, Vermelho, Verde...) */
+/* Para isto funcionar bem, precisamos que o HTML tenha classes específicas,
+   o que complica. Vamos manter simples por agora. */
+
+/* Opção 3: Usar as bordas laterais coloridas (como nos cards de estatísticas) */
+/* Esta é mais sutil e talvez mais elegante */
+
+.guide-card {
+    border-left: 5px solid #198754; /* Verde (cor do Bootstrap success) */
+}
+
+.forum-card {
+    border-left: 5px solid #dc3545; /* Vermelho (cor do Bootstrap danger) */
+}
+
+/* Ajustar as cores dos títulos se necessário */
+.guide-card .card-title {
+    color: #198754; /* Verde */
+    /* color: #4f2d7f; /* Roxo anterior */
+}
+
+.forum-card .card-title {
+    color: #dc3545; /* Vermelho */
+    /* color: #0d6efd; /* Azul anterior */
+}
+
+/* Manter cores dos botões (Roxo) */
+.btn-primary {
+    background-color: #4f2d7f;
+    border-color: #4f2d7f;
+}
+
+    .btn-primary:hover {
+        background-color: #3b225d;
+        border-color: #3b225d;
+    }
+
+.btn-outline-primary {
+    border-color: #4f2d7f;
+    color: #4f2d7f;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #4f2d7f;
+        color: white;
+    }
+/* ============================================= */
+/* Cores Vibrantes - Bora Lá Eventos */
+/* ============================================= */
+
+/* Navbar com gradiente */
+.navbar {
+    background: linear-gradient(90deg, #1E3A8A 0%, #7C3AED 50%, #EC4899 100%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand, .nav-link {
+    color: white !important;
+    font-weight: 500;
+}
+
+    .nav-link:hover {
+        color: #FFD700 !important;
+        transition: 0.3s;
+    }
+
+/* Botões com cores vibrantes */
+.btn-eventos {
+    background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    border: none;
+    color: white;
+    font-weight: bold;
+}
+
+    .btn-eventos:hover {
+        background: linear-gradient(135deg, #EC4899 0%, #7C3AED 100%);
+        color: white;
+        transform: scale(1.05);
+    }
+/* Banner Hero com Imagem de Fundo */
+.banner-hero {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(124, 58, 237, 0.95) 50%, rgba(236, 72, 153, 0.95) 100%),min-height: 400px;
+    display: flex;
+    align-items: center;
+}
+
+    .banner-hero h1 {
+        color: white;
+        text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.8);
+        font-weight: bold;
+    }
+
+    .banner-hero p {
+        color: white;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .banner-hero .btn-primary {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid white;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+        .banner-hero .btn-primary:hover {
+            background: white;
+            color: #7C3AED;
+        }
+        /* ============================================= */
+/* Melhorar Contraste dos Textos */
+/* ============================================= */
+
+/* Textos descritivos na página inicial */
+.text-muted {
+    color: #2d3748 !important; /* Cinza escuro para boa leitura */
+}
+
+/* Títulos das seções */
+h2, h3, h4 {
+    color: #1a202c !important; /* Quase preto para destaque */
+    font-weight: 600;
+}
+
+/* Texto dos parágrafos na home */
+.container p {
+    color: #2d3748 !important;
+}

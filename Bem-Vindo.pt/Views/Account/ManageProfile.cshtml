@@ -1,0 +1,183 @@
+﻿@model Bem_Vindo.pt.Models.User
+@using System.Linq
+@{
+    ViewData["Title"] = "Gerir Perfil";
+    var favoriteGuides = Model.FavoriteGuides?.Select(fg => fg.Guide).ToList() ?? new List<Bem_vindo.pt.Models.Guide>();
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center">Gerir o Seu Perfil</h2>
+            <p class="text-center text-muted">Atualize as suas informações pessoais e gerencie as suas preferências.</p>
+            <hr />
+
+            @* Mensagens de Feedback *@
+            @if (TempData["ProfileSuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">@TempData["ProfileSuccessMessage"]</div>
+            }
+            @if (TempData["PasswordSuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">@TempData["PasswordSuccessMessage"]</div>
+            }
+            @if (TempData["PasswordErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">@TempData["PasswordErrorMessage"]</div>
+            }
+            @if (ViewBag.ProfileSuccessMessage != null)
+            { // Caso a mensagem venha do GET
+                <div class="alert alert-success" role="alert">@ViewBag.ProfileSuccessMessage</div>
+            }
+
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Dados Pessoais</h5>
+                </div>
+                <div class="card-body">
+
+                    @* Formulário para atualizar Nome, Email e Foto *@
+                    <form asp-controller="Account" asp-action="ManageProfile" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Nome" class="form-control" placeholder="Nome Completo" />
+                                    <label asp-for="Nome">Nome Completo</label>
+                                    <span asp-validation-for="Nome" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Email" class="form-control" placeholder="Email" type="email" />
+                                    <label asp-for="Email">Email</label>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                @* Foto Atual *@
+                                <div class="mb-3">
+                                    <label class="form-label d-block">Foto Atual</label>
+                                    @if (!string.IsNullOrEmpty(Model.FotoPerfilUrl))
+                                    {
+                                        <img src="@Url.Content(Model.FotoPerfilUrl)" alt="Foto de Perfil" class="img-thumbnail rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle fa-4x text-muted mb-2"></i>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ProfileImageFile" class="form-label">Alterar Foto de Perfil</label>
+                            <input name="ProfileImageFile" id="ProfileImageFile" type="file" class="form-control" accept="image/png, image/jpeg, image/gif" />
+                            <small class="form-text text-muted">Formatos aceites: JPG, PNG, GIF. Tamanho máximo: 2MB.</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Guardar Alterações do Perfil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @* Formulário para Alterar Password *@
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Alterar Password</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div class="form-floating mb-3">
+                            <input name="CurrentPassword" id="CurrentPassword" class="form-control" type="password" placeholder="Password Atual" required />
+                            <label for="CurrentPassword">Password Atual</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="NewPassword" id="NewPassword" class="form-control" type="password" placeholder="Nova Password" required pattern=".{6,}" title="A password deve ter no mínimo 6 caracteres." />
+                            <label for="NewPassword">Nova Password</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="ConfirmPassword" id="ConfirmPassword" class="form-control" type="password" placeholder="Confirmar Nova Password" required />
+                            <label for="ConfirmPassword">Confirmar Nova Password</label>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fas fa-key me-1"></i> Alterar Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            @* ===== SECÇÃO 3: GUIAS FAVORITOS (ADICIONADA AQUI) ===== *@
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Meus Guias Favoritos (@favoriteGuides.Count())</h5>
+                </div>
+                <div class="card-body">
+                    @if (favoriteGuides.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var guide in favoriteGuides)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a asp-controller="Home" asp-action="DetalhesGuia" asp-route-id="@guide.Id">
+                                        <i class="fas fa-star text-warning me-2"></i> @guide.Titulo
+                                    </a>
+
+                                    @* Botão RÁPIDO para remover favorito *@
+                                    <form asp-controller="Home" asp-action="RemoveFavorite" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja remover este guia dos favoritos?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="guideId" value="@guide.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remover</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info" role="alert">
+                            <p class="mb-0">Ainda não favoritou nenhum guia. Adicione os seus guias mais importantes para os encontrar rapidamente.</p>
+                            <a asp-controller="Home" asp-action="Guias" class="alert-link">Começar a Favoritar Guias</a>
+                        </div>
+                    }
+                </div>
+            </div>
+            @* ===== FIM DA SECÇÃO GUIAS FAVORITOS ===== *@
+
+            @* ===== SECÇÃO FINAL: APAGAR CONTA ===== *@
+            <div class="card shadow-sm mb-4 border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Zona de Perigo</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-danger">Apagar a Sua Conta</h6>
+                    <p class="text-danger">Atenção: Esta ação é permanente e não pode ser desfeita. Todos os seus dados, incluindo favoritos e posts no fórum, serão perdidos.</p>
+
+                    <form asp-controller="Account" asp-action="DeleteAccount" method="post" onsubmit="return confirm('Tem a certeza ABSOLUTA que deseja apagar a sua conta permanentemente? Esta ação não pode ser desfeita.');">
+                        @Html.AntiForgeryToken()
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-exclamation-triangle me-1"></i> Apagar a Minha Conta Permanentemente
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

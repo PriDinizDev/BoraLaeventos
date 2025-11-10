@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Bem_vindo.pt.Models.Guide>
+
+@{
+    ViewData["Title"] = "Gestão de Eventos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Criar Novo Evento</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+           <th>Título de Evento</th>
+            <th>Artista ou Evento</th>
+            <th>Tipo de Evento</th>
+            <th>Informações Gerais</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any()) // Verificação explícita de nulidade
+        {
+            @foreach (var item in Model) // O compilador agora sabe que Model não é nulo aqui
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Titulo)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Entidade)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Processo)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Apagar</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">Ainda não existem guias registados.</td>
+            </tr>
+        }
+    </tbody>
+</table>

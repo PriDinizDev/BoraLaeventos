@@ -1,0 +1,49 @@
+﻿@model Bem_vindo.pt.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Erro";
+}
+
+<div class="container text-center" style="margin-top: 50px; margin-bottom: 50px;">
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h1 class="h3 m-0 fw-normal">@ViewData["Title"]</h1>
+                </div>
+                <div class="card-body p-5">
+
+                    <i class="fas fa-exclamation-triangle fa-4x mb-4 text-danger"></i>
+
+                    <h2 class="h4 text-danger">Ocorreu um erro inesperado.</h2>
+
+                    <p class="mt-4 text-muted">
+                        Pedimos desculpa pelo inconveniente. A nossa equipa já foi notificada e está a trabalhar para resolver o problema.
+                    </p>
+                    <p>
+                        Por favor, tente novamente mais tarde.
+                    </p>
+
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary mt-3">
+                        <i class="fas fa-home me-2"></i>
+                        Voltar à Página Inicial
+                    </a>
+
+                    @* Mostra o ID do Erro apenas se estivermos em modo de Desenvolvimento *@
+                    @if (Model != null && Model.ShowRequestId)
+                    {
+                        <div class="alert alert-secondary mt-4" style="font-size: 0.8rem; text-align: left;">
+                            <p>
+                                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                            </p>
+                            <p class="mb-0">Esta informação é útil para a equipa técnica diagnosticar o problema.</p>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@using System.Linq
+@inject Microsoft.AspNetCore.Authentication.IAuthenticationSchemeProvider SchemeProvider
+@{
+    ViewData["Title"] = "Iniciar Sessão";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2 class="text-center">Iniciar Sessão</h2>
+        <p class="text-center text-muted">Bem-vindo.pt - Aceda à sua conta</p>
+        <hr />
+
+        @* Mensagens de Feedback *@
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewBag.SuccessMessage
+            </div>
+        }
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @ViewBag.ErrorMessage
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null) // Para erros vindos do callback do Google
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        @* O Formulario de Login Tradicional *@
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("returnUrl", (string)TempData["ReturnUrl"]) @* Garante o redirecionamento *@
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input name="email" id="email" class="form-control" placeholder="Email" type="email" required />
+                <label for="email">Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input name="password" id="password" class="form-control" type="password" placeholder="Password" required />
+                <label for="password">Password</label>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+        }
+
+        <div class="mt-3 text-center">
+            <p>- OU -</p>
+        </div>
+
+        @* ===== BOTÃO DE LOGIN SOCIAL (GOOGLE) ===== *@
+        @{
+            // Obter os esquemas de autenticação (Google, etc.) que estão configurados
+            var schemes = (await SchemeProvider.GetAllSchemesAsync()).ToList();
+            var googleScheme = schemes.FirstOrDefault(s => s.Name.ToLowerInvariant() == "google");
+        }
+
+        @if (googleScheme != null)
+        {
+            <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnUrl="@TempData["ReturnUrl"]" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="provider" value="@googleScheme.Name" />
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-danger w-100" title="Login usando a sua conta Google">
+                        <i class="fab fa-google me-2"></i> Entrar com Google
+                    </button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-warning mt-3">
+                Não foi possível carregar o provedor de login social (Google). Verifique as chaves Client ID/Secret no secrets.json.
+            </div>
+        }
+        @* ===== FIM DO BOTÃO DE LOGIN SOCIAL ===== *@
+
+
+        <div class="text-center mt-3">
+            <p>Ainda não tem conta? <a asp-action="Register">Registe-se aqui</a></p>
+            <p><a asp-action="ForgotPassword">Esqueceu-se da password?</a></p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,144 @@
+﻿@model Bem_vindo.pt.Models.Topic
+@using System.Security.Claims
+@{
+    ViewData["Title"] = Model?.Title ?? "Detalhes do Tópico";
+    var currentUserIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    int.TryParse(currentUserIdString, out var currentUserId);
+}
+
+<div class="container mt-4">
+
+    <div class="mb-4 p-4 bg-light rounded shadow-sm">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1>@Model.Title</h1>
+                <p class="text-muted mb-0">
+                    Criado por: <strong>@Model.Author?.Nome</strong> em @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                </p>
+            </div>
+            @if (Model.UserId == currentUserId || User.IsInRole("Administrador"))
+            {
+                <form asp-action="DeleteTopic" asp-controller="Forum" method="post" onsubmit="return confirm('Tem a certeza que deseja excluir este tópico? Esta ação não pode ser desfeita.');">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="topicId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Apagar Tópico
+                    </button>
+                </form>
+            }
+        </div>
+        <hr />>
+
+    @if (TempData["ReplySuccess"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["ReplySuccess"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ReplyError"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ReplyError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+    <h3 class="mb-3">Respostas (@Model.Replies?.Count())</h3>
+
+    @if (Model.Replies != null && Model.Replies.Any())
+    {
+        @foreach (var reply in Model.Replies)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body d-flex justify-content-between">
+                    @* Flexbox para alinhar conteúdo e botão *@
+                    <div>
+                        <p class="card-text reply-content mb-0">
+                            @Html.Raw(reply.Content?.Replace("\n", "<br />"))
+                        </p>
+                    </div>
+
+                    @* ===== BOTÃO EXCLUIR ===== *@
+                    @if (reply.UserId == currentUserId || User.IsInRole("Administrador"))
+                    {
+                        <div class="ms-3">
+                            @* Margem à esquerda para separar do texto *@
+                            <form asp-action="DeleteReply" method="post" onsubmit="return confirm('Tem a certeza que deseja excluir esta resposta?');">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="replyId" value="@reply.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir Resposta">
+                                    <i class="fas fa-trash-alt"></i> @* Ícone de lixo *@
+                                </button>
+                            </form>
+                        </div>
+                    }
+                    @* ===== FIM DO BOTÃO EXCLUIR ===== *@
+
+                </div>
+                <div class="card-footer bg-light text-muted d-flex justify-content-between">
+                    <span>
+                        Respondido por: <strong>@reply.Author?.Nome</strong>
+                    </span>
+                    <span>
+                        @reply.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-secondary text-center" role="alert">
+            Ainda não existem respostas para este tópico. Seja o primeiro a responder!
+        </div>
+    }
+
+    <hr class="my-4" />
+    <div class="card shadow-sm">
+        <div class="card-header">
+            Adicionar uma Resposta
+        </div>
+        <div class="card-body">
+            <form asp-action="AddReply" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="topicId" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <textarea name="replyContent" class="form-control" rows="5" placeholder="Escreva a sua resposta aqui..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-reply me-1"></i> Publicar Resposta
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Voltar à Lista de Tópicos
+        </a>
+    </div>
+
+</div>
+
+@section Styles {
+    <style>
+        .topic-content, .reply-content {
+            white-space: pre-wrap; /* Preserva espaços e quebras de linha no conteúdo */
+            word-wrap: break-word; /* Quebra palavras longas */
+        }
+
+        .card-footer {
+            font-size: 0.85em;
+        }
+        /* Estilo para o botão excluir parecer menos intrusivo */
+        .btn-outline-danger {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.8rem;
+        }
+    </style>
+}

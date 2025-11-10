@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Bem_vindo.pt.Models.Guide>
+
+@{
+    ViewData["Title"] = "Eventos em Portugal";
+}
+
+<div class="container mt-4">
+
+    <div class="text-center mb-4">
+        <h1 class="display-4">@ViewData["Title"]</h1>
+        <p class="lead text-muted">Descubra os melhores eventos em Portugal com informações detalhadas e links diretos para bilhetes.</p>
+    </div>
+
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <form asp-action="Guias" method="get">
+                <div class="input-group">
+                    <input type="text" name="SearchString" class="form-control" placeholder="Pesquisar por Nome do Evento, Local ou Categoria..." value="@ViewData["CurrentFilter"]">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i> Pesquisar
+                    </button>
+                    @if (ViewData["CurrentFilter"] != null && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                    {
+                        <a asp-action="Guias" class="btn btn-outline-secondary">Limpar</a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col">
+                    @* Adicionada a classe 'guide-card' aqui *@
+                    <div class="card h-100 shadow-sm guide-card">
+                        @* <img src="~/images/guide-placeholder.png" class="card-img-top" alt="..."> *@
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.Titulo)</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                @if (!string.IsNullOrEmpty(item.Entidade))
+                                {
+                                    <span>@item.Entidade</span>
+                                }
+                                @if (!string.IsNullOrEmpty(item.Entidade) && !string.IsNullOrEmpty(item.Processo))
+                                {
+                                    <span> | </span>
+                                }
+                                @if (!string.IsNullOrEmpty(item.Processo))
+                                {
+                                    <span>@item.Processo</span>
+                                }
+                            </h6>
+                            <p class="card-text flex-grow-1">
+                                @{
+                                    var localSnippet = item.ConteudoPassoAPasso ?? "";
+                                    if (localSnippet.Length > 100)
+                                    {
+                                        localSnippet = localSnippet.Substring(0, 100).TrimEnd() + "...";
+                                    }
+                                    localSnippet = System.Text.RegularExpressions.Regex.Replace(localSnippet, "<.*?>", string.Empty);
+                                }
+                                @Html.Raw(localSnippet)
+                            </p>
+                            <a asp-action="DetalhesGuia" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-outline-primary mt-auto">
+                                Saber Mais <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <i class="fas fa-info-circle fa-3x text-muted mb-3"></i>
+            <h4>Nenhum Guia Encontrado</h4>
+            <p class="text-muted">
+                @if (ViewData["CurrentFilter"] != null && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                {
+                    <span>Ainda não existem eventos publicados.</span>
+            }
+                else
+                {
+                    <span>Ainda não existem guias publicados nesta secção.</span>
+                }
+            </p>
+        </div>
+    }
+
+</div>
+
+@* A SECÇÃO @section Styles FOI REMOVIDA DESTE FICHEIRO *@

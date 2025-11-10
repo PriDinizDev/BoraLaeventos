@@ -1,0 +1,61 @@
+﻿@model Bem_vindo.pt.Models.ContactViewModel
+@{
+    ViewData["Title"] = "Contactar Apoio Técnico";
+}
+
+<div class="container" style="margin-top: 50px; margin-bottom: 50px;">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+
+                    <h1 class="h3 mb-3 fw-normal text-center">@ViewData["Title"]</h1>
+                    <p class="text-center text-muted mb-4">Tem alguma dúvida ou encontrou um problema? Envie-nos uma mensagem.</p>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <form asp-action="Contact" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Nome" class="form-control" id="Nome" placeholder="O seu Nome">
+                            <label asp-for="Nome"></label>
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Email" type="email" class="form-control" id="Email" placeholder="O seu Email">
+                            <label asp-for="Email"></label>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Assunto" class="form-control" id="Assunto" placeholder="Assunto">
+                            <label asp-for="Assunto"></label>
+                            <span asp-validation-for="Assunto" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <textarea asp-for="Mensagem" class="form-control" id="Mensagem" placeholder="Mensagem" style="height: 150px;"></textarea>
+                            <label asp-for="Mensagem"></label>
+                            <span asp-validation-for="Mensagem" class="text-danger small"></span>
+                        </div>
+
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Enviar Mensagem
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* Ativar a validação de cliente (opcional, mas boa prática) *@
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

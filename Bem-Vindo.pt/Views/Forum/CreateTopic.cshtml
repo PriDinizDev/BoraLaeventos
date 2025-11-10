@@ -1,0 +1,56 @@
+﻿@model Bem_vindo.pt.Models.Topic
+@{
+    ViewData["Title"] = "Criar Novo Tópico";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="CreateTopic" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @* Mostra erros gerais de validação *@
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" placeholder="Escreva um título claro e conciso" required />
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label"></label>
+                            <textarea asp-for="Content" class="form-control" rows="10" placeholder="Descreva o seu assunto ou dúvida em detalhe..." required></textarea>
+                            <span asp-validation-for="Content" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-1"></i> Publicar Tópico
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+                            Cancelar
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Dicas para um bom tópico:</h4>
+                <ul>
+                    <li>Use um título descritivo.</li>
+                    <li>Explique o seu problema ou questão claramente.</li>
+                    <li>Seja educado e respeitoso.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

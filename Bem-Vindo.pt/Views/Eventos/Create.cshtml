@@ -1,0 +1,60 @@
+﻿@model Bem_vindo.pt.Models.Guide
+
+@{
+    ViewData["Title"] = "Criar Novo Guia";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>Guia de Apoio ao Imigrante</h4>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        @* Aumentei a largura para campos maiores *@
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Titulo" class="form-control" placeholder="Título do Guia" />
+                <label asp-for="Titulo"></label>
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Entidade" class="form-control" placeholder="Entidade Responsável (Ex: AIMA, Finanças)" />
+                <label asp-for="Entidade"></label>
+                <span asp-validation-for="Entidade" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Processo" class="form-control" placeholder="Processo (Ex: Obter NIF, Renovação Residência)" />
+                <label asp-for="Processo"></label>
+                <span asp-validation-for="Processo" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <div class="mb-3">
+                    @* Usei div normal para textarea *@
+                    <label asp-for="ConteudoPassoAPasso" class="form-label">Conteúdo Passo-a-Passo</label> @* CORRIGIDO *@
+                    @* Textarea para conteúdo mais longo *@
+                    <textarea asp-for="ConteudoPassoAPasso" class="form-control" rows="10" placeholder="Descreva os passos detalhadamente..."></textarea> @* CORRIGIDO *@
+                    <span asp-validation-for="ConteudoPassoAPasso" class="text-danger"></span> @* CORRIGIDO *@
+                </div>
+                <div class="form-floating mb-3">
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="LinkGovernoOficial" class="form-control" placeholder="Link Oficial (Opcional)" />
+                <label asp-for="LinkGovernoOficial">Link Oficial (Opcional)</label>
+                <span asp-validation-for="LinkGovernoOficial" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <button type="submit" class="btn btn-success">Criar Guia</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

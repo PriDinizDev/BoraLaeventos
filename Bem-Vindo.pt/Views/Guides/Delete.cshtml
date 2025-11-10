@@ -1,0 +1,43 @@
+﻿@model Bem_vindo.pt.Models.Guide
+
+@{
+    ViewData["Title"] = "Apagar Guia";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h3 class="text-danger">Tem a certeza que deseja apagar este guia permanentemente?</h3>
+<div>
+    <h4>Guia: @Html.DisplayFor(model => model.Titulo)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Titulo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Titulo)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Entidade)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Entidade)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Processo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Processo)
+        </dd>
+        @* Poderia adicionar mais campos aqui se quisesse mostrar mais detalhes antes de apagar *@
+    </dl>
+
+    @* Formulário que envia o pedido POST para a Action Delete *@
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        @* Campo oculto para enviar o ID do guia a ser apagado *@
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Apagar</button> |
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,0 +1,120 @@
+﻿@model IEnumerable<Bem_vindo.pt.Models.Topic>
+@{
+    ViewData["Title"] = "Comunidade de Fãs";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        @* Aumentei a margem inferior *@
+        <h1>@ViewData["Title"]</h1>
+        <a asp-action="CreateTopic" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Criar Novo Tópico
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @* Grelha responsiva *@
+            @foreach (var topic in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm forum-card">
+                        @* Card com altura igual e sombra *@
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@topic.Title</h5>
+                            <small class="card-subtitle mb-2 text-muted">
+                                Criado por: @topic.Author?.Nome em @topic.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </small>
+                            <p class="card-text flex-grow-1">
+                                @{
+                                    // Calcula snippet do conteúdo inicial
+                                    var snippet = topic.Content ?? "";
+                                    if (snippet.Length > 100) // Reduzi para 100 caracteres
+                                    {
+                                        snippet = snippet.Substring(0, 100).TrimEnd() + "...";
+                                    }
+                                    snippet = System.Text.RegularExpressions.Regex.Replace(snippet, "<.*?>", string.Empty);
+                                }
+                                @Html.Raw(snippet)
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                @* Alinha link e contagem no fundo *@
+                                <a asp-action="Details" asp-route-id="@topic.Id" class="btn btn-sm btn-outline-primary">
+                                    Ver Tópico <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                                <small class="text-muted">
+                                    <i class="fas fa-comment-alt me-1"></i>
+                                    @topic.Replies?.Count() @(topic.Replies?.Count() == 1 ? "Resposta" : "Respostas")
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            @* Mensagem melhorada quando está vazio *@
+            <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+            <h4>Nenhum Tópico Encontrado</h4>
+            <p class="text-muted">
+                Ainda não existem tópicos no fórum. Seja o primeiro a
+                <a asp-action="CreateTopic">criar um novo tópico</a>!
+            </p>
+            Ainda não existem tópicos na comunidade. Seja o primeiro a
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .forum-card {
+            transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+            border: none;
+        }
+
+            .forum-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+            }
+
+        .card-title {
+            color: #0d6efd; /* Azul padrão do Bootstrap */
+            font-weight: 600;
+            margin-bottom: 0.5rem; /* Menos espaço abaixo do título */
+        }
+
+        .card-subtitle {
+            font-size: 0.8em; /* Subtítulo um pouco menor */
+        }
+
+        .card-text {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 0.75rem; /* Adiciona espaço acima do snippet */
+        }
+        /* Usa as cores do tema definidas no Guias.cshtml */
+        .btn-primary {
+            background-color: #4f2d7f;
+            border-color: #4f2d7f;
+        }
+
+            .btn-primary:hover {
+                background-color: #3b225d;
+                border-color: #3b225d;
+            }
+
+        .btn-outline-primary {
+            border-color: #4f2d7f;
+            color: #4f2d7f;
+        }
+
+            .btn-outline-primary:hover {
+                background-color: #4f2d7f;
+                color: white;
+            }
+    </style>
+}

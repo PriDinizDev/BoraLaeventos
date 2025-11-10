@@ -1,0 +1,119 @@
+﻿@model Bem_vindo.pt.Models.Guide
+@using System.Security.Claims
+@{
+    ViewData["Title"] = Model?.Titulo ?? "Detalhes do Guia";
+}
+
+<div class="container mt-4">
+
+    <h1>@Html.DisplayFor(model => model.Titulo)</h1>
+
+    <hr />
+
+    @if (TempData["FavoriteMessage"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            @TempData["FavoriteMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-9">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    Artista ou Evento
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Entidade)
+                </dd>
+                <dt class="col-sm-3">
+                    Local
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Processo)
+                </dd>
+                <dt class="col-sm-3">
+                    Informações Gerais
+                </dt>
+                <dd class="col-sm-9 guide-content">
+                    @Html.Raw(Model.ConteudoPassoAPasso?.Replace("\n", "<br />"))
+                </dd>
+                <dt class="col-sm-3">
+                    Link Oficial de Compra de Bilhete
+                </dt>
+                <dd class="col-sm-9 guide-content">
+                    @if (!string.IsNullOrEmpty(Model.LinkGovernoOficial))
+                    {
+                        <a href="@Model.LinkGovernoOficial" target="_blank" rel="noopener noreferrer">@Model.LinkGovernoOficial</a>
+                    }
+                    else
+                    {
+                        <span>N/A</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-3">
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="d-grid gap-2">
+                    @if (ViewBag.IsFavorited == true)
+                    {
+                        <form asp-controller="Home" asp-action="RemoveFavorite" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="guideId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-warning w-100">
+                                <i class="fas fa-star"></i> Remover dos Favoritos
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Home" asp-action="AddFavorite" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="guideId" value="@Model.Id" />
+                            <button type="submit" class="btn btn-outline-warning w-100">
+                                <i class="far fa-star"></i> Adicionar aos Favoritos
+                            </button>
+                        </form>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary" role="alert">
+                    <small>Faça <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">login</a> para adicionar aos favoritos.</small>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Guias" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Voltar à Lista de Guias
+        </a>
+    </div>
+
+</div>
+
+@section Styles {
+    <style>
+        .guide-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+
+        .fa-star {
+            color: #ffc107;
+        }
+
+        .far.fa-star {
+            color: #6c757d;
+        }
+    </style>
+}

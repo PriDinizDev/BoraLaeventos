@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Bem_Vindo.pt.Models.User>
+@{
+    // IMPORTANTE: Definir o Layout como null
+    // para não incluir o menu do site, etc., no PDF.
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Lista de Utilizadores - Bem-vindo.pt</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #212529;
+            margin: 20px;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        .header-info {
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 25px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse; /* Tira espaços entre células */
+            margin-top: 20px;
+        }
+
+            .report-table th,
+            .report-table td {
+                border: 1px solid #dee2e6; /* Borda cinzenta clara */
+                padding: 8px;
+                text-align: left;
+                vertical-align: top;
+            }
+
+            .report-table th {
+                background-color: #f8f9fa; /* Fundo cinzento claro no cabeçalho */
+                font-weight: 600;
+            }
+
+            .report-table tr:nth-child(even) {
+                background-color: #fdfdfd; /* Fundo ligeiramente diferente em linhas pares */
+            }
+
+        .status-active {
+            color: #198754; /* Verde */
+            font-weight: bold;
+        }
+
+        .status-inactive {
+            color: #dc3545; /* Vermelho */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>Relatório de Utilizadores</h1>
+            <div class="header-info">
+                <strong>Site:</strong> Bem-vindo.pt<br />
+                <strong>Gerado em:</strong> @DateTime.Now.ToString("dd/MM/yyyy 'às' HH:mm:ss")
+            </div>
+        </div>
+
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Estado da Conta</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Nome</td>
+                            <td>@user.Email</td>
+                            <td>@user.Role</td>
+                            <td>
+                                @if (user.IsContaAtivada)
+                                {
+                                    <span class="status-active">Ativa</span>
+                                }
+                                else
+                                {
+                                    <span class="status-inactive">Inativa</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 20px;">
+                            Nenhum utilizador encontrado.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+﻿@model Bem_vindo.pt.Models.Guide
+
+@{
+    ViewData["Title"] = "Detalhes do Guia";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>Guia: @Html.DisplayFor(model => model.Titulo)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Titulo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Titulo)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Entidade)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Entidade)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Processo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Processo)
+        </dd>
+        <dt class="col-sm-3">
+            <div class="mb-3">
+                @* Usei div normal para textarea *@
+                <label asp-for="ConteudoPassoAPasso" class="form-label">Conteúdo Passo-a-Passo</label> @* CORRIGIDO *@
+                @* Textarea para conteúdo mais longo *@
+                <textarea asp-for="ConteudoPassoAPasso" class="form-control" rows="10" placeholder="Descreva os passos detalhadamente..."></textarea> @* CORRIGIDO *@
+                <span asp-validation-for="ConteudoPassoAPasso" class="text-danger"></span> @* CORRIGIDO *@
+            </div>
+            <div class="form-floating mb-3">
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.LinkGovernoOficial)
+        </dt>
+        <dd class="col-sm-9">
+            @if (!string.IsNullOrEmpty(Model.LinkGovernoOficial))
+            {
+                <a href="@Model.LinkGovernoOficial" target="_blank">@Model.LinkGovernoOficial</a>
+            }
+            else
+            {
+                <span>(Não fornecido)</span>
+            }
+        </dd>
+    </dl>
+</div>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a> |
+    <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
+</div>

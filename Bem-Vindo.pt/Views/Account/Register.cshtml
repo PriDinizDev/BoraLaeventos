@@ -1,0 +1,52 @@
+﻿@model Bem_Vindo.pt.Models.User
+
+@{
+    ViewData["Title"] = "Criar Nova Conta";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2 class="text-center">Criar uma Nova Conta</h2>
+        <p class="text-center text-muted">Bem-vindo.pt - Portal Integrado de Apoio ao Imigrante CPLP</p>
+        <hr />
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "registerForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Nome" class="form-control" placeholder="Nome Completo" />
+                <label asp-for="Nome">Nome Completo</label>
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control" placeholder="name@example.com" type="email" />
+                <label asp-for="Email">Email</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input name="password" id="password" class="form-control" type="password" placeholder="Password" required />
+                <label for="password">Password</label>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Registar Conta</button>
+            </div>
+        }
+
+        <div class="text-center mt-3">
+            <p>Já tem conta? <a asp-action="Login">Faça Login</a></p>
+        </div>
+    </div>
+</div>
+
+@* A validação de scripts continua comentada para o nosso teste de debug *@
+@*
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+*@
